@@ -23,9 +23,39 @@ const { NotImplementedError } = require('../extensions/index.js');
  *  [1, 1, 1]
  * ]
  */
-function minesweeper(/* matrix */) {
-  throw new NotImplementedError('Not implemented');
-  // remove line with error and write your code here
+function minesweeper(matrix) {
+  let copiedArray = matrix.map((arr) => arr.slice().fill(0));
+
+  for (let y = 0; y < matrix.length; y++) {
+    for (let x = 0; x < matrix[y].length; x++) {
+      if (matrix[y][x]) {
+        // here is bomb
+        increaseCellsAroundBomb({x, y}, copiedArray);
+      }
+
+    }
+  }
+  return copiedArray;
+}
+
+function increaseCellsAroundBomb(bombCoordinate = {x: 0, y: 0}, copiedArray) {
+  answer = [];
+  sizeY = copiedArray.length;
+  sizeX = copiedArray[0].length;
+
+  for (let indexY = -1; indexY <= 1; indexY++) {
+      for (let indexX = -1; indexX <= 1; indexX++) {
+
+          if (indexX == 0 && indexY == 0) continue;
+
+          answer.push({y: bombCoordinate.y + indexY, x: bombCoordinate.x + indexX} );
+      }
+  }
+
+  const cordArray =  answer.filter(coordinate => coordinate.x >= 0 && coordinate.x <= sizeX - 1 && coordinate.y >= 0 && coordinate.y <= sizeY - 1);
+  for (const cord of cordArray) {
+    copiedArray[cord.y][cord.x]++;
+  }
 }
 
 module.exports = {

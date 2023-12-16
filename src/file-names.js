@@ -15,9 +15,25 @@ const { NotImplementedError } = require('../extensions/index.js');
  * the output should be ["file", "file(1)", "image", "file(1)(1)", "file(2)"]
  *
  */
-function renameFiles(/* names */) {
-  throw new NotImplementedError('Not implemented');
-  // remove line with error and write your code here
+
+function renameFiles(names) {
+  for (let index = 0; index < names.length; index++) {
+    const element = names[index];
+    const prevArray = names.slice(0, index);
+
+    let findDuplicate = (array, nameElement) => array.find(item => item === nameElement) !== undefined;
+    let createName = (element, counter) => counter === 0 ? element : `${element}(${counter})`;
+
+    let counter = 0;
+    let nameSearch = createName(element, counter);
+    while (findDuplicate(prevArray, nameSearch)) {
+      counter++;
+      nameSearch = createName(element, counter);
+    }
+    names[index] = nameSearch;
+  }
+
+  return names;
 }
 
 module.exports = {
