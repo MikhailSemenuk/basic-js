@@ -18,60 +18,60 @@ function transform(arr) {
   if (!Array.isArray(arr)) {
     throw new Error('\'arr\' parameter must be an instance of the Array!');
   }
-  // TODO: rewrite this
-  if(arraysAreEqual( arr, [1, 2, 3, '--discard-next', 1337, '--double-prev', 4, 5])){
-    return [1, 2, 3, 4, 5];
-  }
-  if(arraysAreEqual( arr, [1, 2, 3, '--discard-next', 1337, '--discard-prev', 4, 5])){
-    return [1, 2, 3, 4, 5];
-  }
 
-
-
-  let answer = [];
+  arr = arr.map(item => ({ item, 'counter': 1 }));
 
   for (let index = 0; index < arr.length; index++) {
     const element = arr[index];
+    const indexNext = index + 1;
+    const indexLast = index - 1;
 
-    switch (element) {
+    switch (element.item) {
+
 
       case '--double-next':
-        const indexNext = index + 1;
-        if(indexNext < arr.length){
-          answer.push(arr[indexNext]);
+
+        if (indexNext < arr.length) {
+          arr[indexNext].counter++;
+        }
+        break;
+
+      case '--discard-next':
+        if (indexNext < arr.length) {
+          arr[indexNext].counter--;
         }
         break;
 
       case '--double-prev':
-        if (index > 0) {
-          answer.push(answer[answer.length - 1]);
+        if(indexLast > 0 && arr[indexLast].counter > 0) {
+          arr[indexLast].counter++;
         }
         break;
 
       case '--discard-prev':
-        answer.pop();
-        break;
+        if(indexLast > 0){
+          arr[indexLast].counter--;
+        }
 
-      case '--discard-next':
-        index++;
         break;
-
-      default:
-        answer.push(element);
     }
 
   }
-  return answer;
-}
 
-function arraysAreEqual(array1, array2) {
-  if (!Array.isArray(array1) || !Array.isArray(array2) || array1.length !== array2.length) {
-    return false;
+  let answer = [];
+  for (const element of arr) {
+    if(element.item === '--discard-prev' || element.item === '--double-prev' ||  element.item === '--discard-next' || element.item === '--double-next'){
+      continue;
+    }else if(element.counter > 0){
+      for (let index = 0; index < element.counter; index++) {
+        answer.push(element.item);
+      }
+    }
+
   }
 
-  return array1.every((value, index) => value === array2[index]);
+  return answer;
 }
-
 
 module.exports = {
   transform
