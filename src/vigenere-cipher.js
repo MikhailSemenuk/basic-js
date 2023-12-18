@@ -21,13 +21,19 @@ const { NotImplementedError } = require('../extensions/index.js');
  */
 class VigenereCipheringMachine {
 
+  constructor(isDirect = true) {
+    this.isDirect = isDirect;
+  }
+
   encrypt(phrase, key) {
 
-    console.error(`!!!!!  phrase=${phrase}, key=${key}`);
+    // console.error(`!!!!!  phrase=${phrase}, key=${key}`);
 
-    if (arguments.length < 2 || typeof phrase !== 'string' ||  typeof key !== 'string') {
+    if (arguments.length < 2 || typeof phrase !== 'string' || typeof key !== 'string') {
       throw new Error('Incorrect arguments!')
     }
+
+
 
     let letPhraseArray = phrase.toUpperCase().split('');
     let keyArray = key.toUpperCase().repeat(Math.ceil(phrase.length / key.length)).split('');
@@ -35,7 +41,7 @@ class VigenereCipheringMachine {
     let answer = [];
     for (const character of letPhraseArray) {
 
-      if ( !itsAlphabetCharacter(character)) {
+      if (!itsAlphabetCharacter(character)) {
         answer.push(character);
       } else {
         const positionCh = getAlphabetPosition(character);
@@ -53,14 +59,14 @@ class VigenereCipheringMachine {
 
     }
 
-    return answer.join('');
+    return this.isDirect ? answer.join('') : answer.reverse().join('');
   }
 
   decrypt(phrase, key) {
 
-    console.error(`!!!!!  phrase=${phrase}, key=${key}`);
+    // console.error(`!!!!!  phrase=${phrase}, key=${key}`);
 
-    if (arguments.length < 2 || typeof phrase !== 'string' ||  typeof key !== 'string') {
+    if (arguments.length < 2 || typeof phrase !== 'string' || typeof key !== 'string') {
       throw new Error('Incorrect arguments!')
     }
 
@@ -70,7 +76,7 @@ class VigenereCipheringMachine {
     let answer = [];
     for (const character of letPhraseArray) {
 
-      if ( !itsAlphabetCharacter(character)) {
+      if (!itsAlphabetCharacter(character)) {
         answer.push(character);
       } else {
         const positionCh = getAlphabetPosition(character);
@@ -88,7 +94,7 @@ class VigenereCipheringMachine {
 
     }
 
-    return answer.join('');
+    return this.isDirect ? answer.join('') : answer.reverse().join('');
   }
 
 
